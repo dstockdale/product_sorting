@@ -1,0 +1,41 @@
+<%= render :partial => 'admin/shared/product_sub_menu' %>
+<h1>Drag and drop to change the sort order</h1>
+<ul id="sort" class="sortable-rows">
+<% @products.each do |product| -%>
+  <li id="<%= dom_id product %>" class="sortable-product">
+    <%= mini_image(product) %>
+    <span class="sortable-name"><%= product.name %></span>
+  </li>
+<% end -%>
+</ul>
+<div class="clear"></div>
+<% content_for :head do %>
+  <%= javascript_include_tag 'jquery-ui' %>
+  <%= javascript_include_tag 'jquery.ui.tabs' %>
+  
+  <script>
+    $(document).ready(function(){
+      
+      $('.sortable-product').hover(function(){
+        $(this).addClass('sortable-hover').find('.sortable-name').show();
+      }, function(){
+        $(this).removeClass('sortable-hover').find('.sortable-name').hide();
+      });
+
+      $('#sort').sortable({
+        dropOnEmpty: false,
+        items: 'li',
+        opacity: 0.4,
+        scroll: true,
+        update: function(){
+          $.ajax({
+            type: 'post',
+            data: $(this).sortable('serialize'),
+            dataType: 'script',
+            url: '<%= sort_admin_products_path %>'
+          });
+        }
+      });
+    });
+  </script>
+<% end %>
