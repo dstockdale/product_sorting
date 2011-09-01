@@ -11,7 +11,7 @@ Admin::ProductsController.class_eval do
     end
 
     respond_to do |wants|
-      wants.js
+      wants.js { head :ok }
     end
 
   end
